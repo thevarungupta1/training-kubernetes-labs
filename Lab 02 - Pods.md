@@ -1,4 +1,4 @@
-# Lab 01: Understanding of PODs
+# Lab 02: Understanding of PODs
 
 ## **Objective**
 By the end of this lab, you will have a functional Minikube installation running on a Windows machine, allowing you to deploy and manage Kubernetes clusters locally.
