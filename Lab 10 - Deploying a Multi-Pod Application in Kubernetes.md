@@ -124,7 +124,7 @@ spec:
 ```
 
 ### 2.2 Create a ConfigMap for the Frontend
-Create a file named `frontend-configmap.yaml with the following content. This ConfigMap contains a custom index.html that calls the backend API. Adjust the content as needed:
+Create a file named `frontend-configmap.yaml` with the following content. This ConfigMap contains a custom index.html that calls the backend API. Adjust the content as needed:
 
 ```yaml
 apiVersion: v1

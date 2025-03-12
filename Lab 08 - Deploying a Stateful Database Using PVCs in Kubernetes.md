@@ -15,7 +15,60 @@
 
 ---
 
-## Part 1: Create a Headless Service
+
+## Part 1: Create Persistent Volume
+### 1.1: Create a file named `mysql-pv.yaml` to define a persistent volume.
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-data
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/data/db"
+```
+
+
+Apply the persistent volume
+```bash
+kubectl apply -f mysql-pv.yaml
+```
+
+### 1.2: Create a Persistent Volume Claim
+Create a file named `mysql-pvc.yaml` to define a persistent volume claim.
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+```
+Apply the persistent volume claim
+```bash
+kubectl apply -f mysql-pvc.yaml
+```
+
+Verify the persistent volume claim creation Check if the persistent volume claim is bound to the persistent volume
+```bash
+kubectl get pv
+kubectl get pvc
+```
+
+
+## Part 2: Create a Headless Service
 
 A headless service is required to manage the network identity for the pods in the StatefulSet. Create a file named `mysql-headless-svc.yaml` with the following content:
 
@@ -47,7 +100,7 @@ Verify the service creation:
 kubectl get svc mysql
 ```
 
-### Part 2: Create a StatefulSet for MySQL
+### Part 3: Create a StatefulSet for MySQL
 The StatefulSet will manage MySQL pods and automatically provision a PVC for each replica using `volumeClaimTemplates`.
 
 Create a file named `mysql-statefulset.yaml` with the following content:
@@ -113,8 +166,8 @@ Also, verify the PVCs created for your StatefulSet:
 kubectl get pvc
 ```
 
-##Part 3: Testing the Deployment
-### 3.1 Connect to the MySQL Pod
+##Part 4: Testing the Deployment
+### 4.1 Connect to the MySQL Pod
 Once the pod is running, you can connect to the MySQL instance to verify data persistence. For example, start a bash session in the MySQL pod:
 
 ```bash
@@ -137,7 +190,7 @@ SELECT * FROM test;
 ```
 Exit the MySQL shell and then the pod's shell.
 
-### 3.2 Verify Data Persistence
+### 4.2 Verify Data Persistence
 To test persistence, delete the MySQL pod and let the StatefulSet recreate it:
 
 ```bash
@@ -165,7 +218,7 @@ SELECT * FROM test;
 
 Your test data should be intact, confirming that the PVC preserved the data.
 
-### Part 4: Cleanup
+### Part 5: Cleanup
 When you have finished the lab, clean up the resources:
 
 ```bash
